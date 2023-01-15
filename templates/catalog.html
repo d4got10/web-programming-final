@@ -1,0 +1,11 @@
+{% from 'header.html' import header %}
+<!DOCTYPE html>
+<html lang="ru">
+{{ header("Каталог") }}
+<body>
+    Каталог
+{% for i in range(100) %}
+    <div><a href="/course/{{ i }}">{{ i }}</a></div>
+{% endfor %}
+</body>
+</html>

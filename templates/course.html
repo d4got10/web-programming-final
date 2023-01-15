@@ -1,0 +1,12 @@
+{% from 'header.html' import header %}
+<!DOCTYPE html>
+<html lang="ru">
+{{ header("Курс") }}
+<body>
+{% if course == None %}
+    Курс не выбран
+{% else %}
+    Курс номер {{ course }}
+{% endif %}
+</body>
+</html>
