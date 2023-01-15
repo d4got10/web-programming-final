@@ -1,0 +1,8 @@
+{% macro course_card(course_info, str) %}
+    <a href="{{ url_for('course', id=course_info.id) }}">
+        <div class="card">
+            <div class="card-header">{{ course_info.name }}</div>
+            <div class="card-body">{{ course_info.description }}</div>
+        </div>
+    </a>
+{% endmacro %}

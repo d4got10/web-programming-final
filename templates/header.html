@@ -5,14 +5,14 @@
         <link href="../static/styles.css" rel="stylesheet" />
         <title>{{ title }}</title>
     </head>
-    <div class="navbar">
+    <div class="navbar bg-dark">
         <div class="">
-            <a class="btn" href="{{ url_for("catalog") }}">Stepik v2</a>
-            <a class="btn" href="{{ url_for("catalog") }}">Каталог</a>
+            <a class="btn text-light" href="{{ url_for("catalog") }}">Stepik v2</a>
+            <a class="btn text-light" href="{{ url_for("catalog") }}">Каталог</a>
         </div>
         <div class="">
-            <a class="btn" href="{{ url_for("authorize") }}">Авторизироваться</a>
-            <a class="btn" href="{{ url_for("register") }}">Зарегистрироваться</a>
+            <a class="btn text-light" href="{{ url_for("authorize") }}">Авторизироваться</a>
+            <a class="btn text-light" href="{{ url_for("register") }}">Зарегистрироваться</a>
         </div>
     </div>
 {% endmacro %}
