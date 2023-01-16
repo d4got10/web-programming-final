@@ -1,6 +1,6 @@
 from app import app
 from flask import render_template, request, redirect, url_for
-from models.tasks import get_task_list
+from models.task import get_task_list
 from flask_login import login_required, current_user, login_manager
 
 

@@ -3,6 +3,25 @@
 <html lang="ru">
 {{ header("Каталог", current_user) }}
 <body>
-    Задания = {{ task_list }}
+<div class="container-fluid">
+    <div class="row flex-nowrap">
+        <div class="col-md-2 col-xl-2 px-0 bg-dark d-flex flex-column align-items-center align-items-sm-start text-white"
+             style="height: 94vh">
+            <div class="w-100 pt-4 pb-4 p-2">
+                Название очень очень крутого курса, да да
+            </div>
+            <ul class="nav nav-pills flex-column mb-sm-auto mb-0 w-100 align-items-center align-items-sm-start" id="menu">
+                {% for task in task_list %}
+                    <li class="nav-item bg-success text-center w-100 pt-3 pb-3 border-dark border-bottom">
+                        <a class="text-white" href="{{ url_for('attempt', id=1) }}">{{ task.name }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="col py-3">
+            Content area...
+        </div>
+    </div>
+</div>
 </body>
 </html>
