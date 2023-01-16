@@ -1,4 +1,4 @@
-{% macro header(title) %}
+{% macro header(title, current_user) %}
     <head>
         <meta charset="UTF-8">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
@@ -10,9 +10,16 @@
             <a class="btn text-light" href="{{ url_for("catalog") }}">Stepik v2</a>
             <a class="btn text-light" href="{{ url_for("catalog") }}">Каталог</a>
         </div>
+    {% if not current_user.is_authenticated %}
         <div class="">
-            <a class="btn text-light" href="{{ url_for("authorize") }}">Авторизироваться</a>
-            <a class="btn text-light" href="{{ url_for("register") }}">Зарегистрироваться</a>
+            <a class="btn text-light" href="{{ url_for("auth.login") }}">Авторизироваться</a>
+            <a class="btn text-light" href="{{ url_for("auth.signup") }}">Зарегистрироваться</a>
         </div>
+    {% else %}
+        <div class="">
+            <a class="btn text-light">Вы вошли как, {{ current_user.name }}</a>
+            <a class="btn text-light" href="{{ url_for("auth.logout") }}">Выйти</a>
+        </div>
+    {% endif %}
     </div>
 {% endmacro %}

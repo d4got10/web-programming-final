@@ -1,0 +1,8 @@
+{% from 'header.html' import header %}
+<!DOCTYPE html>
+<html lang="ru">
+{{ header("Каталог", current_user) }}
+<body>
+    Задания = {{ task_list }}
+</body>
+</html>

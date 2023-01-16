@@ -2,7 +2,7 @@
 {% from 'course_card.html' import course_card %}
 <!DOCTYPE html>
 <html lang="ru">
-{{ header("Каталог") }}
+{{ header("Каталог", current_user) }}
 <body>
     <div class="container">
         <div class="row mt-5 mb-5">
@@ -22,7 +22,7 @@
             </div>
             <div class="col-3"></div>
         </div>
-        {% for i in range(len(course_info_list[:9])) %}
+        {% for i in range(len(course_info_list)) %}
             {% if i % 3 == 0 %}
                 <div class="row mb-3">
             {% endif %}

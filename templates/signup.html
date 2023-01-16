@@ -1,0 +1,39 @@
+{% from 'header.html' import header %}
+<!DOCTYPE html>
+<html lang="ru">
+{{ header("Регистрация", current_user) }}
+<body style="height: 80vh">
+<div class="d-flex h-100 justify-content-center align-items-center">
+    <div class="container">
+        <div class="row">
+            <div class="col-3"></div>
+            <div class="col-6">
+                {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                        <div class="text-danger text-right">
+                            {{ messages[0] }}.
+                        </div>
+                    {% endif %}
+                {% endwith %}
+                <form action="{{ url_for('auth.signup') }}" method="post">
+                    <input type="hidden" name="next" value="{{ next }}">
+                    <div class="row">
+                        <p class="col-3">Логин</p>
+                        <input class="col-9" type="text" name="name">
+                    </div>
+                    <div class="row">
+                        <p class="col-3">Пароль</p>
+                        <input class="col-9" type="text" name="password">
+                    </div>
+                    <div class="row d-flex justify-content-center">
+                        <div class="col-3"></div>
+                        <input class="col-9" type="submit" value="Зарегистрироваться">
+                    </div>
+                </form>
+            </div>
+            <div class="col-3"></div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
