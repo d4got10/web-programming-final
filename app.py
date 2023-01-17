@@ -36,12 +36,13 @@ from models.attempt_task_answer import AttemptTaskAnswer
 
 from models.course import populate_test_courses
 from models.task import populate_tasks
-
+from models.answer import populate_answers
 
 def populate_database():
     populate_test_courses()
     for course in db.session.execute(db.select(Course)).scalars():
         populate_tasks(course.id, 30)
+    populate_answers()
 
 
 with app.app_context():
