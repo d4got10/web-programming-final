@@ -8,3 +8,7 @@ class Attempt(db.Model):
     start_date = db.Column(db.DateTime)
     end_date = db.Column(db.DateTime)
     tasks = db.relationship('AttemptTask', backref='attempt_task', lazy=True)
+
+
+def get_user_attempts(user_id):
+    return db.session.query(Attempt).filter(Attempt.user == user_id).all()

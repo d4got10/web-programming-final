@@ -26,6 +26,7 @@ app.register_blueprint(auth_blueprint)
 import controllers.catalog
 import controllers.course
 import controllers.attempt
+import controllers.profile
 
 from models.attempt import Attempt
 from models.course import Course

@@ -17,7 +17,7 @@
         </div>
     {% else %}
         <div class="">
-            <a class="btn text-light">Вы вошли как, {{ current_user.name }}</a>
+            <a class="btn text-light" href="{{ url_for("profile") }}">Вы вошли как, {{ current_user.name }}</a>
             <a class="btn text-light" href="{{ url_for("auth.logout") }}">Выйти</a>
         </div>
     {% endif %}

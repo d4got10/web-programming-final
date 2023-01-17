@@ -1,0 +1,24 @@
+{% from 'header.html' import header %}
+{% from 'course_card.html' import course_card %}
+<!DOCTYPE html>
+<html lang="ru">
+{{ header("Каталог", current_user) }}
+<body>
+    <div class="container">
+        <div class="row mt-5 mb-5">
+        </div>
+        <div class="row mb-2">
+            <div class="col-3"></div>
+            <div class="col-6">
+                <h2 class="text-center">Профиль пользователя, {{ current_user.name }}</h2>
+            </div>
+            <div class="col-3"></div>
+        </div>
+        {% for attempt in attempts %}
+            <div>
+                <a href="{{ url_for("attempt", id=attempt.id) }}">Попытка с айди {{ attempt.id }}</a>
+            </div>
+        {% endfor %}
+    </div>
+</body>
+</html>
