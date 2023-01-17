@@ -28,7 +28,7 @@ def login_post():
         return redirect(url_for('auth.login'))
 
     login_user(user, remember=remember)
-    if next is not None:
+    if next is not None and next != 'None':
         return redirect(next)
     return redirect(url_for('catalog'))
 
@@ -54,11 +54,11 @@ def signup_post():
     new_user = User(name=name, password=generate_password_hash(password, method='sha256'))
     db.session.add(new_user)
     db.session.commit()
-    login_user(user)
+    login_user(new_user)
 
-    if next is not None:
+    if next is not None and next != 'None':
         return redirect(next)
-    return redirect(url_for('auth.login'))
+    return redirect(url_for('catalog'))
 
 @login_required
 @auth.route('/logout')

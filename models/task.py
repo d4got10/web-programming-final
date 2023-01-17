@@ -1,4 +1,5 @@
 from app import db
+from sqlalchemy.sql.expression import func
 
 
 class Task(db.Model):
@@ -11,15 +12,23 @@ class Task(db.Model):
 
 
 def get_task_list(course_id, count):
-    return [generate_task(course_id, i) for i in range(1, count + 1)]
+    return db.session.execute(db.select(Task).filter_by(course=course_id).order_by(func.random()).limit(count)).scalars()
 
 
-def generate_task(course_id, index):
-    return {
-        'id': index,
-        'name': f'Задание под номером {index}',
-        'description': f'Описание задания под номером {index} для курса {course_id}',
-        'task_type': 'single',
-        'answers': ['Вариант ответа 1', 'Вариант ответа 2', 'Вариант ответа 3', 'Вариант ответа 4'],
-        'correct_answer': [2]
-    }
+def populate_tasks(course_id, count):
+    for i in range(count):
+        if i < count / 2:
+            task = generate_task(course_id, i + 1, 1)
+        elif i < count * 7 / 8:
+            task = generate_task(course_id, i + 1, 2)
+        else:
+            task = generate_task(course_id, i + 1, 3)
+        db.session.add(task)
+    db.session.commit()
+
+
+def generate_task(course_id, index, type):
+    return Task(name=f'Задание c названием {index}',
+                description=f'Описание задания c названием {index} для курса {course_id}',
+                task_type=type,
+                course=course_id)

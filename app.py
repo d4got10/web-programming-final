@@ -35,7 +35,17 @@ from models.attempt_task import AttemptTask
 from models.attempt_task_answer import AttemptTaskAnswer
 
 from models.course import populate_test_courses
+from models.task import populate_tasks
+
+
+def populate_database():
+    populate_test_courses()
+    for course in db.session.execute(db.select(Course)).scalars():
+        populate_tasks(course.id, 30)
+
 
 with app.app_context():
     db.create_all()
-    #populate_test_courses()
+    #populate_database()
+
+
