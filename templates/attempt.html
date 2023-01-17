@@ -9,8 +9,12 @@
              style="height: 94vh">
             <div class="w-100 pt-4 pb-4 p-2">
                 <p>{{ course.name }}</p>
-                <p>Дата начала: {{ attempt.start_date }}</p>
-                <p id="timer"></p>
+                <p>Начато: {{ attempt.start_date.strftime('%Y-%m-%d, %H:%M:%S') }}</p>
+                {% if datetime.now() >= attempt.end_date %}
+                    <p>Сдано: {{ attempt.end_date.strftime('%Y-%m-%d, %H:%M:%S') }}</p>
+                {% else %}
+                    <p id="timer"></p>
+                {% endif %}
             </div>
             <ul class="nav nav-pills flex-column mb-sm-auto mb-0 w-100 align-items-center align-items-sm-start"
                 id="menu">
@@ -33,42 +37,100 @@
                     {% endif %}
                 {% endfor %}
             </ul>
+            <div class="w-100 pt-4 pb-4 p-2">
+                {% if datetime.now() < attempt.end_date %}
+                <form action="{{ url_for('close_attempt', id=attempt.id, selected_task=selected_task_id) }}"
+                      method="post">
+                    <input class="btn-success w-100" type="submit" value="Завершить">
+                </form>
+                {% endif %}
+            </div>
         </div>
         <div class="col py-3">
             {% if selected_task_status == 'none' %}
                 <p>Пока не отвечали</p>
             {% elif selected_task_status == 'completed' %}
                 <p class="text-success">Так держать!</p>
+                {% set readonly = "readonly" %}
             {% elif selected_task_status == 'failed' %}
                 <p class="text-danger">Не правильно!</p>
+                {% set readonly = "readonly" %}
             {% endif %}
             {% if selected_task.task_type == 1 %}
                 <p>Задание с одним вариантом ответа</p>
                 <p>{{ selected_task.description }}</p>
-                <form action="{{url_for('attempt', id=attempt.id, selected_task=selected_task_id) }}" method="post">
-                    <input type="hidden" name="task" value="{{ selected_attempt_task.id }}">
-                    {% for answer in answers %}
-                        <input type="radio" name="answer" value="{{ answer.value }}"> {{ answer.value }} <br>
-                    {% endfor %}
-                    <input type="submit" value="Отправить">
-                </form>
+                {% if selected_task_status == 'none' %}
+                    <form action="{{ url_for('attempt', id=attempt.id, selected_task=selected_task_id) }}"
+                          method="post">
+                        <input type="hidden" name="task" value="{{ selected_attempt_task.id }}">
+                        {% for answer in answers %}
+                            <input type="radio" name="answer" value="{{ answer.value }}"> {{ answer.value }} <br>
+                        {% endfor %}
+                        <input type="submit" value="Отправить">
+                    </form>
+                {% else %}
+                    <form>
+                        {% for answer in answers %}
+                            {% if answer.value in user_answers %}
+                                <input type="radio" name="answer" value="{{ answer.value }}" checked> {{ answer.value }}
+                                <br>
+                            {% else %}
+                                <input type="radio" name="answer" value="{{ answer.value }}" disabled>
+                                {{ answer.value }} <br>
+                            {% endif %}
+                        {% endfor %}
+                    </form>
+                {% endif %}
             {% elif selected_task.task_type == 2 %}
                 <p>Задание с несколькими вариантами ответа</p>
                 <p>{{ selected_task.description }}</p>
-                {% for answer in answers %}
-                    <p>{{ answer.value }}</p>
-                {% endfor %}
+                {% if selected_task_status == 'none' %}
+                    <form action="{{ url_for('attempt', id=attempt.id, selected_task=selected_task_id) }}"
+                          method="post">
+                        <input type="hidden" name="task" value="{{ selected_attempt_task.id }}">
+                        {% for answer in answers %}
+                            <input type="checkbox" name="answers" value="{{ answer.value }}"> {{ answer.value }} <br>
+                        {% endfor %}
+                        <input type="submit" value="Отправить">
+                    </form>
+                {% else %}
+                    <form>
+                        {% for answer in answers %}
+                            {% if answer.value in user_answers %}
+                                <input type="checkbox" name="answer" value="{{ answer.value }}" checked>
+                                {{ answer.value }} <br>
+                            {% else %}
+                                <input type="checkbox" name="answer" value="{{ answer.value }}" disabled>
+                                {{ answer.value }} <br>
+                            {% endif %}
+                        {% endfor %}
+                    </form>
+                {% endif %}
             {% else %}
                 <p>Задание с текстовым ответом</p>
-                <p>{{ selected_task.description }}</p>
-                {% for answer in answers %}
-                    <p>{{ answer.value }}</p>
-                {% endfor %}
+                {% if selected_task_status == 'none' %}
+                    <form action="{{ url_for('attempt', id=attempt.id, selected_task=selected_task_id) }}"
+                          method="post">
+                        <input type="hidden" name="task" value="{{ selected_attempt_task.id }}">
+                        <input type="text" name="answer" placeholder="Поле для ответа...">
+                        <input type="submit" value="Отправить">
+                    </form>
+                {% else %}
+                    <form>
+                        <input type="text" name="answer" value="{{ user_answers[0] }}" disabled>
+                    </form>
+                {% endif %}
             {% endif %}
         </div>
     </div>
 </div>
 <script>
+    const elements = document.getElementsByClassName("readonly");
+    for (let i = 0; i < elements.length; i++) {
+        const element = elements.item(i);
+        element.readOnly = true;
+    }
+
     const countDownDate = new Date("{{ attempt.end_date }}").getTime();
 
     const update_time = function () {
