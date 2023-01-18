@@ -1,5 +1,5 @@
 from app import app
-from flask import render_template, request, redirect, url_for
+from flask import render_template, request, redirect, url_for, session
 from models.task import get_task_list
 from flask_login import login_required, current_user, login_manager
 from models.attempt import Attempt
@@ -23,8 +23,16 @@ def new_attempt():
         )
         db.session.add(attempt_task)
     db.session.commit()
+    session['new_attempt'] = model.id
     return redirect(url_for('attempt', id=model.id))
 
+@app.route('/bind_attempt/<id>', methods=['GET'])
+@login_required
+def bind_attempt(id=None):
+    model = Attempt.query.filter_by(id=id).first()
+    model.user = current_user.id
+    db.session.commit()
+    return redirect(url_for('attempt', id=id))
 
 @app.route('/attempt/<id>')
 @login_required
@@ -103,7 +111,8 @@ def attempt_answer(id=None):
 @login_required
 def close_attempt(id=None):
     model = Attempt.query.filter_by(id=id).first()
-    model.end_date = datetime.now()
-    db.session.commit()
+    if datetime.now() < model.end_date:
+        model.end_date = datetime.now()
+        db.session.commit()
     selected_task = request.args.get('selected_task')
     return redirect(url_for('attempt', id=id, selected_task=selected_task))

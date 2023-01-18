@@ -1,5 +1,5 @@
 import flask
-from flask import Blueprint, render_template, redirect, url_for, request, flash
+from flask import Blueprint, render_template, redirect, url_for, request, flash, session
 from app import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from models.user import User
@@ -28,8 +28,9 @@ def login_post():
         return redirect(url_for('auth.login'))
 
     login_user(user, remember=remember)
-    if next is not None and next != 'None':
-        return redirect(next)
+    if 'new_attempt' in session:
+        attempt = session['new_attempt']
+        return redirect(url_for('bind_attempt', id=attempt))
     return redirect(url_for('catalog'))
 
 
@@ -56,8 +57,9 @@ def signup_post():
     db.session.commit()
     login_user(new_user)
 
-    if next is not None and next != 'None':
-        return redirect(next)
+    if 'new_attempt' in session:
+        attempt = session['new_attempt']
+        return redirect(url_for('bind_attempt', id=attempt))
     return redirect(url_for('catalog'))
 
 @login_required

@@ -1,4 +1,5 @@
 from app import db
+from models.course import Course
 
 
 class Attempt(db.Model):
@@ -11,4 +12,8 @@ class Attempt(db.Model):
 
 
 def get_user_attempts(user_id):
-    return db.session.query(Attempt).filter(Attempt.user == user_id).all()
+    return db.session.query(Attempt, Course)\
+        .join(Course)\
+        .filter(Attempt.user == user_id)\
+        .order_by(Attempt.start_date.desc())\
+        .all()

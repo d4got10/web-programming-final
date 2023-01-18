@@ -108,6 +108,7 @@
                 {% endif %}
             {% else %}
                 <p>Задание с текстовым ответом</p>
+                <p>{{ selected_task.description }}</p>
                 {% if selected_task_status == 'none' %}
                     <form action="{{ url_for('attempt', id=attempt.id, selected_task=selected_task_id) }}"
                           method="post">

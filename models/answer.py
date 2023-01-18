@@ -15,7 +15,7 @@ def populate_answers():
         if task.task_type == 1:
             correct = randint(0, 3)
             for i in range(4):
-                answer = Answer(value=f'Вариант ответа номер {i + 1}',
+                answer = Answer(value=f'Вариант ответа номер {i + 1} {"(правильный)" if i == correct else ""}',
                                 is_correct=(i == correct),
                                 task=task.id)
                 db.session.add(answer)
@@ -23,7 +23,7 @@ def populate_answers():
         elif task.task_type == 2:
             correct = {randint(0, 6), randint(0, 6), randint(0, 6)}
             for i in range(6):
-                answer = Answer(value=f'Вариант ответа номер {i + 1}',
+                answer = Answer(value=f'Вариант ответа номер {i + 1} {"(правильный)" if i in correct else ""}',
                                 is_correct=(i in correct),
                                 task=task.id)
                 db.session.add(answer)

@@ -4,21 +4,89 @@
 <html lang="ru">
 {{ header("Каталог", current_user) }}
 <body>
-    <div class="container">
-        <div class="row mt-5 mb-5">
-        </div>
-        <div class="row mb-2">
-            <div class="col-3"></div>
-            <div class="col-6">
-                <h2 class="text-center">Профиль пользователя, {{ current_user.name }}</h2>
-            </div>
-            <div class="col-3"></div>
-        </div>
-        {% for attempt in attempts %}
-            <div>
-                <a href="{{ url_for("attempt", id=attempt.id) }}">Попытка с айди {{ attempt.id }}</a>
-            </div>
-        {% endfor %}
+<div class="container">
+    <div class="row mt-5 mb-5">
     </div>
+    <div class="row mb-2">
+        <div class="col-3"></div>
+        <div class="col-6">
+            <h2 class="text-center">Профиль пользователя, {{ current_user.name }}</h2>
+        </div>
+        <div class="col-3"></div>
+    </div>
+    <p class="text-center">Ваши текущие попытки:</p>
+        {% for attempt in open %}
+            {% if loop.index % 2 == 0 %}
+                <div class="row pt-4 pb-4" style="background-color: #e0e0e0">
+            {% else %}
+                <div class="row pt-4 pb-4" style="background-color: #d0d0d0">
+            {% endif %}
+            <div class="col-5">
+                Попытка прохождения <a href="{{ url_for("course", id=attempt.course.id) }}"> {{ attempt.course.name }}</a>
+            </div>
+            <div class="col-3 timer">
+                {{ attempt.attempt.end_date.strftime('%Y-%m-%d, %H:%M:%S') }}
+            </div>
+            <div class="col-2">
+                <label class="text-success">{{ attempt.completed_count }}</label>/<label class="text-danger">{{ attempt.failed_count }}</label>/<label>{{ attempt.task_count }}</label>
+            </div>
+            <div class="col-2">
+                <a href="{{ url_for("attempt", id=attempt.attempt.id) }}">Продолжить</a>
+            </div>
+        </div>
+    {% endfor %}
+    <p class="text-center">Ваши завершённые попытки:</p>
+    {% for attempt in closed %}
+        {% if loop.index % 2 == 0 %}
+            <div class="row pt-4 pb-4" style="background-color: #e0e0e0">
+        {% else %}
+            <div class="row pt-4 pb-4" style="background-color: #d0d0d0">
+        {% endif %}
+            <div class="col-5">
+                Попытка прохождения <a href="{{ url_for("course", id=attempt.course.id) }}"> {{ attempt.course.name }}</a>
+            </div>
+            <div class="col-3">
+                Сдано: {{ attempt.attempt.end_date.strftime('%Y-%m-%d, %H:%M:%S') }}
+            </div>
+            <div class="col-2">
+                <label class="text-success">{{ attempt.completed_count }}</label>/<label class="text-danger">{{ attempt.failed_count }}</label>/<label>{{ attempt.task_count }}</label>
+            </div>
+            <div class="col-2">
+                <a href="{{ url_for("attempt", id=attempt.attempt.id) }}">Перейти</a>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+<script>
+    const elements = document.getElementsByClassName("timer");
+    for (let i = 0; i < elements.length; i++) {
+        const element = elements.item(i);
+
+        const countDownDate = new Date(element.innerHTML).getTime();
+
+        const update_time = function () {
+            var now = new Date().getTime();
+
+            var distance = countDownDate - now;
+
+            var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            element.innerHTML = "Осталось: " + days + "д " + hours + "ч "
+                + minutes + "м " + seconds + "с ";
+
+            if (distance <= 0) {
+                clearInterval(x);
+                element.innerHTML = "Завершено";
+            }
+        }
+
+        update_time()
+        // Update the count down every 1 second
+        const x = setInterval(update_time, 1000);
+    }
+</script>
 </body>
 </html>
