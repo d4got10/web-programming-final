@@ -9,6 +9,9 @@
         <div class="">
             <!--<a class="btn text-light" href="{{ url_for("catalog") }}">Stepik v2</a>-->
             <a class="btn text-light" href="{{ url_for("catalog") }}">Каталог</a>
+            {%  if current_user.is_authenticated %}
+                <a class="btn text-light" href="{{ url_for("my_courses") }}">Мои курсы</a>
+            {% endif %}
         </div>
     {% if not current_user.is_authenticated %}
         <div class="">

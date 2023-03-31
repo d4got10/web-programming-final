@@ -7,12 +7,14 @@ class Course(db.Model):
     description = db.Column(db.String(4096))
     attempts = db.relationship('Attempt', backref='attempt_course', lazy=True)
     tasks = db.relationship('Task', backref='task_course', lazy=True)
-
+    author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
 def get_popular_courses(count):
     #return [generate_test_course(i) for i in range(1, count + 1)]
     return Course.query.limit(count).all()
 
+def get_users_courses(user_id):
+    return Course.query.filter_by(author_id=user_id).all()
 
 def get_course(id):
     return Course.query.filter_by(id=id).first()
