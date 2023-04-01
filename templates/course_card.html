@@ -1,8 +1,15 @@
-{% macro course_card(course_info, str) %}
+{% macro course_card(course_info, str, current_user_id) %}
     <a href="{{ url_for('course', id=course_info.id) }}">
         <div class="card">
-            <div class="card-header">{{ course_info.name }}</div>
-            <div class="card-body">{{ course_info.description }}</div>
+            <div style="display: -webkit-inline-flex" class="card-header">
+                {{course_info.name+' '}}
+                {% if current_user_id and course_info.author_id==current_user_id %}
+                    <div><a href="{{ url_for('edit_course', id=course_info.id) }}" style="color: grey; text-decoration: underline; margin-left: 5px">Редактировать</a></div>
+                {% endif %}
+                <p style="color: #d0d0d0; margin-left: 5px;">{{ " "+" (id" }}{{ course_info.id }})</p>
+
+            </div>
+            <div class="card-body">{{ course_info.description}}</div>
         </div>
     </a>
 {% endmacro %}
