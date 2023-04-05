@@ -19,6 +19,8 @@ def get_users_courses(user_id):
 def get_course(id):
     return Course.query.filter_by(id=id).first()
 
+def get_last_id():
+    return Course.query.last().id
 
 def generate_test_course(index):
     return {
