@@ -54,7 +54,7 @@ def edit_course(id=None):
     return render_template('edit_course.html', course=get_course(id))
 
 @app.route('/edit_tasks_of_course/<id>', methods=["POST", "GET"])
-def edit_answers_of_course(id=None, selected_task_id=None):
+def edit_tasks_of_course(id=None, selected_task_id=None):
     course = request.form.get('course')
     user = request.form.get('user')
     tasks = get_task_list(id, 100, False)
@@ -63,13 +63,19 @@ def edit_answers_of_course(id=None, selected_task_id=None):
         task_to_edit = get_task(request.values.get('selected_task_id'))
         task_to_edit.name = request.values.get('task_name')
         task_to_edit.description = request.values.get('task_description')
+        selected_task = get_task(int(selected_task_id))
         db.session.commit()
     elif request.values.get('submit-delete-task'):
         task_do_delete = get_task(request.values.get('selected_task_id'))
         db.session.delete(task_do_delete)
         db.session.commit()
         selected_task = None
-        return redirect(url_for('edit_answers_of_course', id=id))
+        return redirect(url_for('edit_tasks_of_course', id=id))
+    elif request.values.get('new-task'):
+        new_task = Task(course=id, name=request.values.get('task_name'), description = request.values.get('task_description'), task_type=1)
+        db.session.add(new_task)
+        db.session.commit()
+        return redirect(url_for('edit_tasks_of_course', id=id))
     elif (request.values.get('selected_task_id')):
         selected_task = get_task(int(selected_task_id))
     else:
