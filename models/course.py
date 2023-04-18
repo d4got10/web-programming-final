@@ -16,6 +16,12 @@ def get_popular_courses(count):
 def get_users_courses(user_id):
     return Course.query.filter_by(author_id=user_id).all()
 
+def delete_course(course_id):
+    course_to_delete = Course.query.filter_by(id=course_id).first()
+    db.session.delete(course_to_delete)
+    db.session.commit()
+    return Course.query
+
 def get_course(id):
     return Course.query.filter_by(id=id).first()
 

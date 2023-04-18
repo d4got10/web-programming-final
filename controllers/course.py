@@ -1,6 +1,6 @@
 from app import app
 from flask import render_template, request, redirect, url_for
-from models.course import get_course, get_users_courses, Course, get_last_id
+from models.course import get_course, get_users_courses, Course, get_last_id, delete_course
 from models.attempt_task import AttemptTask, get_tasks, get_completed_tasks, get_failed_tasks
 from models.attempt_task_answer import AttemptTaskAnswer
 from models.task import Task
@@ -39,6 +39,9 @@ def edit_course(id=None):
     if not request.values.get('course_name'):
         print('fff')
         return render_template('edit_course.html', course=get_course(id))
+    if request.values.get('submit-delete'):
+        delete_course(request.values.get('course'))
+        return redirect(url_for('my_courses'))
     course = get_course(request.values.get('course'))
     course.name=request.values.get('course_name')
     course.description = request.values.get('course_description')
