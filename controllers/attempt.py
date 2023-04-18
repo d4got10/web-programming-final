@@ -16,7 +16,7 @@ def new_attempt():
     user = request.form.get('user')
     model = Attempt(course=course, user=user, start_date=datetime.now(), end_date=datetime.now() + timedelta(minutes=1))
     db.session.add(model)
-    for task in get_task_list(course, 10):
+    for task in get_task_list(course, 10, True):
         attempt_task = AttemptTask(
             attempt=model.id,
             task=task.id

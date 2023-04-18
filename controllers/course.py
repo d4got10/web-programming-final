@@ -3,7 +3,7 @@ from flask import render_template, request, redirect, url_for
 from models.course import get_course, get_users_courses, Course, get_last_id, delete_course
 from models.attempt_task import AttemptTask, get_tasks, get_completed_tasks, get_failed_tasks
 from models.attempt_task_answer import AttemptTaskAnswer
-from models.task import Task
+from models.task import Task, get_task_list, get_task
 from models.attempt import Attempt
 from datetime import datetime, timedelta
 from flask import render_template, request, redirect, url_for, session
@@ -48,22 +48,30 @@ def edit_course(id=None):
     print(course.id)
     print(course.name)
     print(course.description)
+    task_list = get_tasks
     #db.session.add(course)
     db.session.commit()
     return render_template('edit_course.html', course=get_course(id))
 
-@app.route('/edit_answers_of_course/<id>', methods=["POST"])
-def edit_answers_of_course(id=None):
+@app.route('/edit_tasks_of_course/<id>', methods=["POST", "GET"])
+def edit_answers_of_course(id=None, selected_task_id=None):
     course = request.form.get('course')
     user = request.form.get('user')
-    model = Attempt(course=course, user=user, start_date=datetime.now(), end_date=datetime.now() + timedelta(minutes=1))
-    db.session.add(model)
-    for task in get_task_list(course, 10):
-        attempt_task = AttemptTask(
-            attempt=model.id,
-            task=task.id
-        )
-        db.session.add(attempt_task)
-    db.session.commit()
-    session['new_attempt'] = model.id
-    return redirect(url_for('attempt', id=model.id))
+    tasks = get_task_list(id, 100, False)
+    selected_task_id = request.values.get('selected_task_id')
+    if request.values.get('submit-edit-task-description'):
+        task_to_edit = get_task(request.values.get('selected_task_id'))
+        task_to_edit.name = request.values.get('task_name')
+        task_to_edit.description = request.values.get('task_description')
+        db.session.commit()
+    elif request.values.get('submit-delete-task'):
+        task_do_delete = get_task(request.values.get('selected_task_id'))
+        db.session.delete(task_do_delete)
+        db.session.commit()
+        selected_task = None
+        return redirect(url_for('edit_answers_of_course', id=id))
+    elif (request.values.get('selected_task_id')):
+        selected_task = get_task(int(selected_task_id))
+    else:
+        selected_task = None
+    return render_template('edit_course_tasks.html',  course=get_course(id), user=user, task_list=tasks, selected_task=selected_task)

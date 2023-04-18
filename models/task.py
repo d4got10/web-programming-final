@@ -10,9 +10,15 @@ class Task(db.Model):
     answers = db.relationship('Answer', backref='answer_task', lazy=True)
 
 
-def get_task_list(course_id, count):
-    return db.session.execute(db.select(Task).filter_by(course=course_id).order_by(func.random()).limit(count)).scalars()
+def get_task_list(course_id, count, use_random):
+    if (use_random):
+        return db.session.execute(db.select(Task).filter_by(course=course_id).order_by(func.random()).limit(count)).scalars()
+    else:
+        return db.session.execute(
+            db.select(Task).filter_by(course=course_id).limit(count)).scalars()
 
+def get_task(task_id):
+    return Task.query.filter_by(id=task_id).first()
 
 def populate_tasks(course_id, count):
     for i in range(count):
