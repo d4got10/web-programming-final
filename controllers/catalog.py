@@ -6,7 +6,7 @@ from models.user import User
 
 @app.route('/')
 def catalog():  # put application's code here
-    course_info_list = get_popular_courses(9)
+    course_info_list = get_popular_courses(99)
     authors = User.query.limit(100).all()
     print(course_info_list)
     if not current_user.is_authenticated:
