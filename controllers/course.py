@@ -1,18 +1,16 @@
-from app import app
 from flask import render_template, request, redirect, url_for
-from models.course import get_course, get_users_courses, Course, get_last_id, delete_course
-from models.attempt_task import AttemptTask, get_tasks, get_completed_tasks, get_failed_tasks
-from models.attempt_task_answer import AttemptTaskAnswer
-from models.task import Task, get_task_list, get_task
-from models.user import User
-from models.answer import Answer
-from models.attempt import Attempt
-from datetime import datetime, timedelta
-from flask import render_template, request, redirect, url_for, session
-from models.task import get_task_list
 from flask_login import current_user
+
+from app import app
 from app import db
+from models.attempt_task import get_tasks
+from models.course import get_course, get_users_courses, Course, delete_course
+from models.task import get_task
+from models.task import get_task_list
+from models.user import User
 from service.course_task_service import edit_task, delete_task, create_new_task
+
+
 @app.route('/course/<id>')
 def course(id=None):
     return render_template('course.html', course=get_course(id))
