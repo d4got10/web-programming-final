@@ -12,7 +12,7 @@ from flask import render_template, request, redirect, url_for, session
 from models.task import get_task_list
 from flask_login import current_user
 from app import db
-
+from service.course_task_service import edit_task, delete_task, create_new_task
 @app.route('/course/<id>')
 def course(id=None):
     return render_template('course.html', course=get_course(id))
@@ -63,60 +63,12 @@ def edit_tasks_of_course(id=None, selected_task_id=None):
     tasks = get_task_list(id, 100, False)
     selected_task_id = request.values.get('selected_task_id')
     if request.values.get('edit-task'):
-
-        task_to_edit = get_task(request.values.get('selected_task_id'))
-        task_to_edit.name = request.values.get('task_name')
-        task_to_edit.description = request.values.get('task_description')
-        selected_task = get_task(int(selected_task_id))
-
-        if task_to_edit.task_type != 3:
-            correct_answers = [int(v) for v in request.form.getlist('correct-answers[]')]
-            for answer in task_to_edit.answers:
-                answer.is_correct = 1 if answer.id in correct_answers else 0
-
-        answers = request.form.getlist('ans[]')
-        for i in range(len(task_to_edit.answers)):
-            task_to_edit.answers[i].value = answers[i]
-
-        db.session.commit()
-
+        selected_task = edit_task(selected_task_id)
     elif request.values.get('submit-delete-task'):
-        task_do_delete = get_task(request.values.get('selected_task_id'))
-        db.session.delete(task_do_delete)
-        db.session.commit()
-        selected_task = None
+        delete_task()
         return redirect(url_for('edit_tasks_of_course', id=id))
     elif request.values.get('new-task'):
-        task_type = request.form.get('task-type')
-        task_type_by_name = {
-            'single': 1,
-            'multiple': 2,
-            'text': 3
-        }
-        new_task = Task(course=id,
-                        name=request.values.get('task_name'),
-                        description=request.values.get('task_description'),
-                        task_type=task_type_by_name[task_type])
-
-        answers = request.form.getlist('ans[]')
-        db.session.add(new_task)
-        db.session.commit()
-
-        db.session.refresh(new_task)
-
-        if task_type == 'text':
-            correct_answers = [1]
-        else:
-            correct_answers = [int(v) for v in request.form.getlist('correct-answers[]')]
-
-        index = 1
-        for answer in answers:
-            is_correct = index in correct_answers
-            task_answer = Answer(value=answer, is_correct=is_correct, task=new_task.id)
-            db.session.add(task_answer)
-            index += 1
-
-        db.session.commit()
+        create_new_task(id)
         return redirect(url_for('edit_tasks_of_course', id=id))
     elif request.values.get('selected_task_id'):
         selected_task = get_task(int(selected_task_id))
@@ -127,3 +79,8 @@ def edit_tasks_of_course(id=None, selected_task_id=None):
                            user=user,
                            task_list=tasks,
                            selected_task=selected_task)
+
+
+
+
+
