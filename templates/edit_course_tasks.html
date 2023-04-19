@@ -1,4 +1,6 @@
 {% from 'header.html' import header %}
+{% from 'new_task_form.html' import new_task %}
+{% from 'edit_task_form.html' import edit_task %}
 <!DOCTYPE html>
 <html lang="en">
 {{ header("Каталог", current_user) }}
@@ -10,13 +12,14 @@
             <div class="w-100 pt-4 pb-4 p-2">
                 <p>{{ course.name }}</p>
             </div>
-                {% for task in task_list %}
-                    <li class="nav nav-pills flex-column mb-sm-auto mb-0 w-100 align-items-center align-items-sm-start" id="menu">
-                        <a class="text-white"
-                               href="{{ url_for('edit_tasks_of_course', id=course.id, selected_task_id=task.id) }}">{{ task.name }}</a>
-                    </li>
-                {% endfor %}
-        <button id="show-form-btn">Показать форму</button>
+            {% for task in task_list %}
+                <li class="nav nav-pills flex-column mb-sm-auto mb-0 w-100 align-items-center align-items-sm-start"
+                    id="menu">
+                    <a class="text-white"
+                       href="{{ url_for('edit_tasks_of_course', id=course.id, selected_task_id=task.id) }}">{{ task.name }}</a>
+                </li>
+            {% endfor %}
+            <button id="show-form-btn">Показать форму</button>
             <div class="w-100 pt-4 pb-4 p-2">
             </div>
         </div>
@@ -30,46 +33,43 @@
             {% endif %}
             {% if selected_task %}
                 <div class="col py-3">
-                <form action="/edit_tasks_of_course/{{ course.id }}" method="POST">
-                        <textarea style=
-                            "margin-bottom: 0.5rem;
-                    display: flex;
-                    font-weight: 500;
-                    font-size: 1.25rem;
-                    line-height: 1.2;" cols="50" rows="3" name="task_description" type="text" value="{{ selected_task.description }}">{{ selected_task.description }}
-                        </textarea>
-                        <textarea style=
-                            "margin-bottom: 0.5rem;
-                    display: flex;
-                    font-weight: 500;
-                    font-size: 1.25rem;
-                    line-height: 1.2;" cols="50" rows="3" name="task_name" type="text" value="{{ selected_task.name }}">{{ selected_task.name }}
-                        </textarea>
-                        <input type="hidden" name="selected_task_id" value="{{ selected_task.id }}" >
-                        <input type="submit" class="btn-success w-40 text-center rounded-pill" name="submit-edit-task-description" value="Изменить описание задания" >
-                        <input type="submit" class="btn-success w-40 text-center rounded-pill" name="submit-delete-task" value="Удалить задание" >
-                </form>
+                    {{ edit_task(course, selected_task) }}
                 </div>
             {% endif %}
-        <div class="col py-3">
-            <form id="new_task_form" action="/edit_tasks_of_course/{{ course.id }}" method="POST" style="display: none">
-                    <textarea style=
-                        "margin-bottom: 0.5rem;
-                display: flex;
-                font-weight: 500;
-                font-size: 1.25rem;
-                line-height: 1.2;" cols="50" rows="3" name="task_description" type="text" value="">
-                    </textarea>
-                    <textarea style=
-                        "margin-bottom: 0.5rem;
-                display: flex;
-                font-weight: 500;
-                font-size: 1.25rem;
-                line-height: 1.2;" cols="50" rows="3" name="task_name" type="text" value="">
-                    </textarea>
-                    <input type="submit" class="btn-success w-40 text-center rounded-pill" name="new-task" value="Создать новое задание" >
-            </form>
-        </div>
+            <div class="col py-3">
+                <div id="new_task_form" style="display: none">
+                    <fieldset>
+                        <legend>Выберите тип задания:</legend>
+
+                        <div>
+                            <input class="task_type_btn" type="radio" id="single" name="drone" value="single"
+                                   checked>
+                            <label for="single">С одним вариантом ответа</label>
+                        </div>
+
+                        <div>
+                            <input class="task_type_btn" type="radio" id="multiple" name="drone" value="multiple">
+                            <label for="multiple">С несколькими вариантами ответа</label>
+                        </div>
+
+                        <div>
+                            <input class="task_type_btn" type="radio" id="text" name="drone" value="text">
+                            <label for="text">С развернутым ответом</label>
+                        </div>
+                    </fieldset>
+                    <div class="mt-5"> </div>
+
+                    <div id="new_task_form_single" style="display: none">
+                        {{ new_task(course, "single") }}
+                    </div>
+                    <div id="new_task_form_multiple" style="display: none">
+                        {{ new_task(course, "multiple") }}
+                    </div>
+                    <div id="new_task_form_text" style="display: none">
+                        {{ new_task(course, "text") }}
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -77,14 +77,39 @@
     const showFormBtn = document.getElementById("show-form-btn");
     const myForm = document.getElementById("new_task_form");
 
+    const form_by_type = new Map(
+        [
+            ["single", document.getElementById("new_task_form_single")],
+            ["multiple", document.getElementById("new_task_form_multiple")],
+            ["text", document.getElementById("new_task_form_text")]
+        ]
+    )
+    const task_type_btns = document.getElementsByClassName("task_type_btn");
+
+    Array.from(task_type_btns).forEach(element => {
+        if(element.checked){
+            form_by_type.get(element.value).style.display = "block";
+        }
+        element.addEventListener('change', function () {
+            form_by_type.forEach((value, key, map) => {
+                console.log(value);
+                console.log(key);
+                value.style.display = "none";
+            });
+            //console.log(element)
+            //console.log(form_by_type[element.value])
+            form_by_type.get(element.value).style.display = "block";
+        })
+    })
+
     showFormBtn.addEventListener("click", () => {
-      myForm.style.display = "block";
+        myForm.style.display = "block";
     });
 
-{#    myForm.addEventListener("submit", (event) => {
-      event.preventDefault(); // Отменяем стандартное поведение формы при отправке
-      myForm.style.display = "none";
-    });#}
+    {#    myForm.addEventListener("submit", (event) => {
+          event.preventDefault(); // Отменяем стандартное поведение формы при отправке
+          myForm.style.display = "none";
+        });#}
 
 </script>
 </body>

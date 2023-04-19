@@ -1,0 +1,124 @@
+{% macro new_task(course, type) %}
+    {% if type == "text" %}
+        <form action="/edit_tasks_of_course/{{ course.id }}" method="POST">
+            <input type="hidden" name="task-type" value="text">
+            <p>Название задания</p>
+            <textarea style=
+                              "margin-bottom: 0.5rem;
+                display: flex;
+                font-weight: 500;
+                font-size: 1.25rem;
+                line-height: 1.2;" cols="50" rows="3" name="task_name" type="text"></textarea>
+            <p>Описание задания</p>
+            <textarea style=
+                              "margin-bottom: 0.5rem;
+                display: flex;
+                font-weight: 500;
+                font-size: 1.25rem;
+                line-height: 1.2;" cols="50" rows="3" name="task_description" type="text"></textarea>
+            <p>Правильный ответ</p>
+            <textarea style=
+                              "margin-bottom: 0.5rem;
+                display: flex;
+                font-weight: 500;
+                font-size: 1.25rem;
+                line-height: 1.2;" cols="50" rows="3" name="ans[]" type="text"></textarea>
+            <input type="submit" class="btn-success w-40 text-center rounded-pill" name="new-task"
+                   value="Создать новое задание">
+        </form>
+    {% elif type == "single" %}
+        <form action="/edit_tasks_of_course/{{ course.id }}" method="POST">
+            <input type="hidden" name="task-type" value="single">
+            <p>Название задания</p>
+            <textarea style=
+                              "margin-bottom: 0.5rem;
+                display: flex;
+                font-weight: 500;
+                font-size: 1.25rem;
+                line-height: 1.2;" cols="50" rows="3" name="task_name" type="text"></textarea>
+            <p>Описание задания</p>
+            <textarea style=
+                              "margin-bottom: 0.5rem;
+                display: flex;
+                font-weight: 500;
+                font-size: 1.25rem;
+                line-height: 1.2;" cols="50" rows="3" name="task_description" type="text"></textarea>
+
+            <br>
+            <fieldset>
+                <legend>Варианты ответов:</legend>
+
+                <div>
+                    <input type="text" name="ans[]" value="Вариант ответа 1">
+                    <input type="radio" name="correct-answers[]" id="asn1" value="1" checked>
+                    <br>
+                </div>
+
+                <div>
+                    <input type="text" name="ans[]" value="Вариант ответа 2">
+                    <input type="radio" name="correct-answers[]" id="asn2" value="2">
+                    <br>
+                </div>
+                <div>
+                    <input type="text" name="ans[]" value="Вариант ответа 3">
+                    <input type="radio" name="correct-answers[]" id="asn3" value="3">
+                    <br>
+                </div>
+                <div>
+                    <input type="text" name="ans[]" value="Вариант ответа 4">
+                    <input type="radio" name="correct-answers[]" id="asn4" value="4">
+                    <br>
+                </div>
+
+                <input type="submit" class="btn-success w-40 mt-3 text-center rounded-pill" name="new-task"
+                       value="Создать новое задание">
+            </fieldset>
+        </form>
+    {% else %}
+        <form action="/edit_tasks_of_course/{{ course.id }}" method="POST">
+            <input type="hidden" name="task-type" value="multiple">
+            <p>Название задания</p>
+            <textarea style=
+                              "margin-bottom: 0.5rem;
+                display: flex;
+                font-weight: 500;
+                font-size: 1.25rem;
+                line-height: 1.2;" cols="50" rows="3" name="task_name" type="text"></textarea>
+            <p>Описание задания</p>
+            <textarea style=
+                              "margin-bottom: 0.5rem;
+                display: flex;
+                font-weight: 500;
+                font-size: 1.25rem;
+                line-height: 1.2;" cols="50" rows="3" name="task_description" type="text"></textarea>
+            <p>Варианты ответов:</p>
+
+            <input type="text" name="ans[]" value="Вариант ответа 1">
+            <input type="checkbox" name="correct-answers[]" value="1">
+            <br>
+
+            <input type="text" name="ans[]" value="Вариант ответа 2">
+            <input type="checkbox" name="correct-answers[]" value="2">
+            <br>
+
+            <input type="text" name="ans[]" value="Вариант ответа 3">
+            <input type="checkbox" name="correct-answers[]" value="3">
+            <br>
+
+            <input type="text" name="ans[]" value="Вариант ответа 4">
+            <input type="checkbox" name="correct-answers[]" value="4">
+            <br>
+
+            <input type="text" name="ans[]" value="Вариант ответа 5">
+            <input type="checkbox" name="correct-answers[]" value="5">
+            <br>
+
+            <input type="text" name="ans[]" value="Вариант ответа 6">
+            <input type="checkbox" name="correct-answers[]" value="6">
+            <br>
+
+            <input type="submit" class="btn-success w-40 mt-3 text-center rounded-pill" name="new-task"
+                   value="Создать новое задание">
+        </form>
+    {% endif %}
+{% endmacro %}
