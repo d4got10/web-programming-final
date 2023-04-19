@@ -4,6 +4,7 @@ from models.course import get_course, get_users_courses, Course, get_last_id, de
 from models.attempt_task import AttemptTask, get_tasks, get_completed_tasks, get_failed_tasks
 from models.attempt_task_answer import AttemptTaskAnswer
 from models.task import Task, get_task_list, get_task
+from models.user import User
 from models.answer import Answer
 from models.attempt import Attempt
 from datetime import datetime, timedelta
@@ -19,8 +20,9 @@ def course(id=None):
 @app.route('/my_courses')
 def my_courses(id=None):
     course_info_list = get_users_courses(current_user.id)
+    authors = User.query.limit(100).all()
     print(course_info_list)
-    return render_template('catalog.html',current_user_id=current_user.id,  in_my_courses_list=True, title_name="Ваши курсы", course_info_list=course_info_list, len=len, str=str)
+    return render_template('catalog.html',current_user_id=current_user.id, authors=authors, in_my_courses_list=True, title_name="Ваши курсы", course_info_list=course_info_list, len=len, str=str)
 
 @app.route('/new_course', methods=["POST", "GET"])
 def new_course(id=None):

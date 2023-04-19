@@ -19,7 +19,7 @@
                 <div class="row mb-3">
             {% endif %}
             <div class="col-4">
-            {{ course_card(course_info_list[i], str, current_user_id) }}
+            {{ course_card(course_info_list[i], str, current_user_id, authors) }}
             </div>
             {% if i % 3 == 2 %}
                 </div>
