@@ -6,8 +6,7 @@
 
     const countDownDate = new Date("{{ attempt.end_date }}").getTime();
 
-    const update_time = function ():void
-    {
+    const update_time = function ():void {
 
         let now = new Date().getTime();
 
@@ -21,8 +20,7 @@
         document.getElementById("timer").innerHTML = "Осталось: " + days + "д " + hours + "ч "
             + minutes + "м " + seconds + "с ";
 
-        if (distance < 0)
-        {
+        if (distance < 0) {
             clearInterval(x);
             document.getElementById("timer").innerHTML = "Завершено";
         }
