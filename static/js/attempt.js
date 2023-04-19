@@ -6,21 +6,23 @@
 
     const countDownDate = new Date("{{ attempt.end_date }}").getTime();
 
-    const update_time = function () {
+    const update_time = function ():void
+    {
 
-        var now = new Date().getTime();
+        let now = new Date().getTime();
 
-        var distance = countDownDate - now;
+        let distance = countDownDate - now;
 
-        var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-        var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+        let days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        let hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        let seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
         document.getElementById("timer").innerHTML = "Осталось: " + days + "д " + hours + "ч "
             + minutes + "м " + seconds + "с ";
 
-        if (distance < 0) {
+        if (distance < 0)
+        {
             clearInterval(x);
             document.getElementById("timer").innerHTML = "Завершено";
         }
@@ -28,4 +30,4 @@
 
     update_time()
     // Update the count down every 1 second
-    const x = setInterval(update_time, 1000);
+    const x:number = setInterval(update_time, 1000);
